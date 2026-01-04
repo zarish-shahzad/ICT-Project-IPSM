@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPSM – Integrated Public Service Management</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    header {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        margin-bottom: 20px;
+        border-radius: 8px;
+    }
+
+    .header-subtitle {
+        font-size: 14px;
+        margin-top: 8px;
+        opacity: 0.9;
+        font-weight: normal;
+    }
+
+    nav {
+        background: white;
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    nav button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    nav button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    nav button.active {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        display: none;
+        animation: slideIn 0.3s ease-in-out;
+    }
+
+    .container.active {
+        display: block;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    h2 {
+        color: #2c3e50;
+        border-bottom: 3px solid #667eea;
+        padding-bottom: 12px;
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+
+    h3 {
+        color: #34495e;
+        margin-top: 20px;
+        margin-bottom: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 14px;
+    }
+
+    input, select, textarea {
+        width: 100%;
+        padding: 12px;
+        border-radius: 6px;
+        border: 2px solid #e0e0e0;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
+        font-family: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .btn {
+        margin-top: 20px;
+        padding: 13px 28px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    .btn-small {
+        padding: 8px 14px;
+        margin: 5px;
+        font-size: 12px;
+        margin-top: 0;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .message {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+        font-weight: 500;
+        display: none;
+    }
+
+    .message.show {
+        display: block;
+        animation: slideIn 0.3s ease-in-out;
+    }
+
+    .message.success {
+        background: #d4edda;
+        color: #155724;
+        border: 2px solid #28a745;
+    }
+
+    .message.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 2px solid #f5c6cb;
+    }
+
+    .message.info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 2px solid #bee5eb;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    table thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    table th, table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    table tbody tr:hover {
+        background: #f8f9ff;
+    }
+
+    table tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-progress {
+        background: #cfe2ff;
+        color: #084298;
+    }
+
+    .status-resolved {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .chart-container {
+        margin-top: 20px;
+        padding: 20px;
+        background: #f8f9ff;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+    }
+
+    .chart-bar {
+        display: flex;
+        align-items: center;
+        margin: 15px 0;
+    }
+
+    .chart-label {
+        width: 150px;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .chart-bar-bg {
+        flex: 1;
+        height: 30px;
+        background: #e0e0e0;
+        border-radius: 6px;
+        overflow: hidden;
+        margin: 0 15px;
+    }
+
+    .chart-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 10px;
+        color: white;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .stat-number {
+        font-size: 32px;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 40px;
+        color: #999;
+        font-size: 16px;
+    }
+
+    footer {
+        text-align: center;
+        padding: 20px;
+        color: white;
+        font-size: 13px;
+        margin-top: 30px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        nav {
+            flex-direction: column;
+        }
+        nav button {
+            width: 100%;
+        }
+        .container {
+            padding: 20px;
+        }
+        header {
+            font-size: 20px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    Integrated Public Service Management System (IPSM)
+    <div class="header-subtitle">Efficient Service Request Management</div>
+</header>
+
+<nav>
+    <button class="nav-btn active" onclick="showSection('home')">🏠 Home</button>
+    <button class="nav-btn" onclick="showSection('submit')">📝 Submit Request</button>
+    <button class="nav-btn" onclick="showSection('admin')">⚙️ Admin Panel</button>
+    <button class="nav-btn" onclick="showSection('reports')">📊 Reports</button>
+</nav>
+
+<!-- HOME SECTION -->
+<div class="container active" id="home">
+    <h2>Welcome to IPSM</h2>
+    <p style="font-size: 16px; line-height: 1.6; color: #555; margin: 15px 0;">This system allows citizens to submit service requests and administrators to manage and analyze them efficiently. Our goal is to ensure prompt and quality service delivery across all departments.</p>
+    
+    <div class="stats-grid" id="homeStats">
+        <div class="stat-card">
+            <div class="stat-label">Total Requests</div>
+            <div class="stat-number" id="homeTotalRequests">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Pending</div>
+            <div class="stat-number" id="homePending">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">In Progress</div>
+            <div class="stat-number" id="homeInProgress">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Resolved</div>
+            <div class="stat-number" id="homeResolved">0</div>
+        </div>
+    </div>
+
+    <h3>Quick Features</h3>
+    <ul style="line-height: 2; color: #555; margin-left: 20px;">
+        <li>✅ Easy service request submission</li>
+        <li>✅ Real-time status tracking</li>
+        <li>✅ Comprehensive admin dashboard</li>
+        <li>✅ Detailed analytics and reports</li>
+        <li>✅ Secure data storage</li>
+    </ul>
+</div>
+
+<!-- SUBMIT REQUEST SECTION -->
+<div class="container" id="submit">
+    <h2>Submit Service Request</h2>
+    <div id="submitMessage" class="message"></div>
+
+    <div class="form-group">
+        <label>Citizen Name *</label>
+        <input type="text" id="citizenName" placeholder="Enter your full name" required>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="citizenEmail" placeholder="your.email@example.com" required>
+        </div>
+        <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" id="citizenPhone" placeholder="+1 (555) 000-0000" required>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label>Service Category *</label>
+            <select id="serviceType" required>
+                <option value="">Select a service...</option>
+                <option value="School Facilities">🏫 School Facilities</option>
+                <option value="Enrollment Issues">📋 Enrollment Issues</option>
+                <option value="Hospital Services">🏥 Hospital Services</option>
+                <option value="Staff Shortage">👥 Staff Shortage</option>
+                <option value="Road Damage">🛣️ Road Damage</option>
+                <option value="Traffic Signals">🚦 Traffic Signals</option>
+                <option value="Garbage Collection">🗑️ Garbage Collection</option>
+                <option value="Water Supply">💧 Water Supply</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Request Date *</label>
+            <input type="date" id="requestDate" required>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Location/Address *</label>
+        <input type="text" id="location" placeholder="Enter location or address" required>
+    </div>
+
+    <div class="form-group">
+        <label>Description *</label>
+        <textarea id="description" placeholder="Please provide detailed information about your request..." required></textarea>
+    </div>
+
+    <button class="btn" onclick="submitRequest()">Submit Request</button>
+</div>
+
+<!-- ADMIN PANEL SECTION -->
+<div class="container" id="admin">
+    <h2>Admin Panel</h2>
+    <div id="adminMessage" class="message"></div>
+
+    <h3>Search & Update Request</h3>
+    <div class="form-row">
+        <div class="form-group">
+            <label>Request ID</label>
+            <input type="text" id="searchRequestId" placeholder="Search by Request ID...">
+        </div>
+        <div class="form-group">
+            <label>Citizen Name</label>
+            <input type="text" id="searchCitizenName" placeholder="Search by Citizen Name...">
+        </div>
+    </div>
+
+    <button class="btn btn-success" onclick="searchRequests()">🔍 Search</button>
+    <button class="btn" onclick="resetAdminSearch()" style="margin-left: 10px;">Reset</button>
+
+    <h3 style="margin-top: 30px;">All Service Requests</h3>
+    <div id="adminRequestsTable"></div>
+
+    <!-- Update Status Modal -->
+    <div id="updateModal" style="display:none; margin-top: 30px; padding: 20px; background: #f8f9ff; border-radius: 8px; border: 2px solid #667eea;">
+        <h3>Update Request Status</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Request ID</label>
+                <input type="text" id="updateRequestId" readonly>
+            </div>
+            <div class="form-group">
+                <label>Citizen Name</label>
+                <input type="text" id="updateCitizenName" readonly>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Current Status</label>
+            <input type="text" id="updateCurrentStatus" readonly>
+        </div>
+
+        <div class="form-group">
+            <label>New Status *</label>
+            <select id="updateNewStatus" required>
+                <option value="">Select new status...</option>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Admin Notes</label>
+            <textarea id="updateNotes" placeholder="Add any notes about this update..."></textarea>
+        </div>
+
+        <button class="btn" onclick="saveStatusUpdate()">💾 Save Update</button>
+        <button class="btn btn-danger" onclick="closeUpdateModal()" style="margin-left: 10px;">Cancel</button>
+    </div>
+</div>
+
+<!-- REPORTS SECTION -->
+<div class="container" id="reports">
+    <h2>Reports & Analytics</h2>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Total Requests</div>
+            <div class="stat-number" id="totalRequests">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Pending Requests</div>
+            <div class="stat-number" id="pendingRequests">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">In Progress</div>
+            <div class="stat-number" id="inProgressRequests">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Resolved Requests</div>
+            <div class="stat-number" id="resolvedRequests">0</div>
+        </div>
+    </div>
+
+    <h3>Requests by Service Category</h3>
+    <div class="chart-container" id="serviceChart"></div>
+
+    <h3>Status Distribution</h3>
+    <div class="chart-container" id="statusChart"></div>
+
+    <h3>Request Timeline</h3>
+    <div id="reportsTable"></div>
+</div>
+
+<footer>
+    © 2026 IPSM Project — Integrated Public Service Management System | Designed for Academic Use
+</footer>
+
+<script>
+// ==================== DATA MANAGEMENT ====================
+const STORAGE_KEY = 'ipsm_requests';
+
+function generateRequestId() {
+    return 'REQ-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+}
+
+function getAllRequests() {
+    const data = localStorage.getItem(STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+}
+
+function saveRequest(request) {
+    const requests = getAllRequests();
+    requests.push(request);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(requests));
+}
+
+function updateRequest(requestId, updates) {
+    let requests = getAllRequests();
+    requests = requests.map(req => 
+        req.id === requestId ? { ...req, ...updates } : req
+    );
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(requests));
+}
+
+function deleteRequest(requestId) {
+    let requests = getAllRequests();
+    requests = requests.filter(req => req.id !== requestId);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(requests));
+}
+
+function findRequestById(requestId) {
+    return getAllRequests().find(req => req.id === requestId);
+}
+
+// ==================== UI NAVIGATION ====================
+function showSection(id) {
+    document.querySelectorAll('.container').forEach(div => div.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+
+    // Refresh data when sections are opened
+    if (id === 'home') updateHomeStats();
+    if (id === 'admin') displayAdminRequests();
+    if (id === 'reports') generateReports();
+}
+
+// ==================== HOME PAGE ====================
+function updateHomeStats() {
+    const requests = getAllRequests();
+    const stats = {
+        total: requests.length,
+        pending: requests.filter(r => r.status === 'Pending').length,
+        inProgress: requests.filter(r => r.status === 'In Progress').length,
+        resolved: requests.filter(r => r.status === 'Resolved').length
+    };
+
+    document.getElementById('homeTotalRequests').textContent = stats.total;
+    document.getElementById('homePending').textContent = stats.pending;
+    document.getElementById('homeInProgress').textContent = stats.inProgress;
+    document.getElementById('homeResolved').textContent = stats.resolved;
+}
+
+// ==================== SUBMIT REQUEST ====================
+function submitRequest() {
+    const name = document.getElementById('citizenName').value.trim();
+    const email = document.getElementById('citizenEmail').value.trim();
+    const phone = document.getElementById('citizenPhone').value.trim();
+    const service = document.getElementById('serviceType').value;
+    const date = document.getElementById('requestDate').value;
+    const location = document.getElementById('location').value.trim();
+    const description = document.getElementById('description').value.trim();
+
+    const messageDiv = document.getElementById('submitMessage');
+
+    // Validation
+    if (!name || !email || !phone || !service || !date || !location || !description) {
+        showMessage(messageDiv, 'All fields are required', 'error');
+        return;
+    }
+
+    if (!isValidEmail(email)) {
+        showMessage(messageDiv, 'Please enter a valid email address', 'error');
+        return;
+    }
+
+    if (!isValidPhone(phone)) {
+        showMessage(messageDiv, 'Please enter a valid phone number', 'error');
+        return;
+    }
+
+    // Create request object
+    const request = {
+        id: generateRequestId(),
+        name: name,
+        email: email,
+        phone: phone,
+        service: service,
+        date: date,
+        location: location,
+        description: description,
+        status: 'Pending',
+        submittedAt: new Date().toLocaleString(),
+        notes: ''
+    };
+
+    // Save to localStorage
+    saveRequest(request);
+
+    // Show success message
+    showMessage(messageDiv, `✅ Request submitted successfully! Your Request ID is: ${request.id}`, 'success');
+
+    // Clear form
+    document.getElementById('citizenName').value = '';
+    document.getElementById('citizenEmail').value = '';
+    document.getElementById('citizenPhone').value = '';
+    document.getElementById('serviceType').value = '';
+    document.getElementById('requestDate').value = '';
+    document.getElementById('location').value = '';
+    document.getElementById('description').value = '';
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidPhone(phone) {
+    return /[\d\s\-\+\(\)]+/.test(phone) && phone.length >= 10;
+}
+
+function showMessage(element, message, type) {
+    element.textContent = message;
+    element.className = 'message ' + type + ' show';
+    setTimeout(() => {
+        element.classList.remove('show');
+    }, 5000);
+}
+
+// ==================== ADMIN PANEL ====================
+function displayAdminRequests(filter = {}) {
+    const requests = getAllRequests();
+    
+    // Apply filters
+    let filtered = requests;
+    if (filter.id) {
+        filtered = filtered.filter(r => r.id.includes(filter.id.toUpperCase()));
+    }
+    if (filter.name) {
+        filtered = filtered.filter(r => r.name.toLowerCase().includes(filter.name.toLowerCase()));
+    }
+
+    const tableHtml = filtered.length === 0 
+        ? '<div class="no-data">No requests found</div>'
+        : `
+            <table>
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Citizen Name</th>
+                        <th>Service</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filtered.map(req => `
+                        <tr>
+                            <td><strong>${req.id}</strong></td>
+                            <td>${req.name}</td>
+                            <td>${req.service}</td>
+                            <td><span class="status-badge status-${req.status.toLowerCase().replace(' ', '-')}">${req.status}</span></td>
+                            <td>${req.date}</td>
+                            <td>
+                                <button class="btn btn-small btn-success" onclick="openUpdateModal('${req.id}')">Edit</button>
+                                <button class="btn btn-small btn-danger" onclick="deleteRequestAdmin('${req.id}')">Delete</button>
+                                <button class="btn btn-small" onclick="viewRequestDetails('${req.id}')">View</button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+
+    document.getElementById('adminRequestsTable').innerHTML = tableHtml;
+}
+
+function searchRequests() {
+    const id = document.getElementById('searchRequestId').value;
+    const name = document.getElementById('searchCitizenName').value;
+    displayAdminRequests({ id, name });
+}
+
+function resetAdminSearch() {
+    document.getElementById('searchRequestId').value = '';
+    document.getElementById('searchCitizenName').value = '';
+    displayAdminRequests();
+}
+
+function openUpdateModal(requestId) {
+    const request = findRequestById(requestId);
+    if (!request) return;
+
+    document.getElementById('updateRequestId').value = request.id;
+    document.getElementById('updateCitizenName').value = request.name;
+    document.getElementById('updateCurrentStatus').value = request.status;
+    document.getElementById('updateNewStatus').value = '';
+    document.getElementById('updateNotes').value = request.notes || '';
+    document.getElementById('updateModal').style.display = 'block';
+}
+
+function closeUpdateModal() {
+    document.getElementById('updateModal').style.display = 'none';
+}
+
+function saveStatusUpdate() {
+    const requestId = document.getElementById('updateRequestId').value;
+    const newStatus = document.getElementById('updateNewStatus').value;
+    const notes = document.getElementById('updateNotes').value;
+
+    if (!newStatus) {
+        showMessage(document.getElementById('adminMessage'), 'Please select a new status', 'error');
+        return;
+    }
+
+    updateRequest(requestId, { status: newStatus, notes: notes });
+    showMessage(document.getElementById('adminMessage'), 'Request updated successfully!', 'success');
+    closeUpdateModal();
+    displayAdminRequests();
+}
+
+function deleteRequestAdmin(requestId) {
+    if (confirm('Are you sure you want to delete this request? This action cannot be undone.')) {
+        deleteRequest(requestId);
+        showMessage(document.getElementById('adminMessage'), 'Request deleted successfully!', 'success');
+        displayAdminRequests();
+    }
+}
+
+function viewRequestDetails(requestId) {
+    const request = findRequestById(requestId);
+    if (!request) return;
+
+    alert(`
+Request ID: ${request.id}
+Citizen: ${request.name}
+Email: ${request.email}
+Phone: ${request.phone}
+Service: ${request.service}
+Location: ${request.location}
+Status: ${request.status}
+Submitted: ${request.submittedAt}
+
+Description:
+${request.description}
+
+Notes:
+${request.notes || 'No notes yet'}
+    `);
+}
+
+// ==================== REPORTS ====================
+function generateReports() {
+    const requests = getAllRequests();
+
+    // Update stats
+    document.getElementById('totalRequests').textContent = requests.length;
+    document.getElementById('pendingRequests').textContent = requests.filter(r => r.status === 'Pending').length;
+    document.getElementById('inProgressRequests').textContent = requests.filter(r => r.status === 'In Progress').length;
+    document.getElementById('resolvedRequests').textContent = requests.filter(r => r.status === 'Resolved').length;
+
+    // Service chart
+    generateServiceChart(requests);
+
+    // Status chart
+    generateStatusChart(requests);
+
+    // Request table
+    generateReportsTable(requests);
+}
+
+function generateServiceChart(requests) {
+    const serviceCount = {};
+    requests.forEach(req => {
+        serviceCount[req.service] = (serviceCount[req.service] || 0) + 1;
+    });
+
+    const max = Math.max(...Object.values(serviceCount), 1);
+    const chartHtml = Object.entries(serviceCount)
+        .sort((a, b) => b[1] - a[1])
+        .map(([service, count]) => {
+            const percentage = (count / max) * 100;
+            return `
+                <div class="chart-bar">
+                    <div class="chart-label">${service}</div>
+                    <div class="chart-bar-bg">
+                        <div class="chart-bar-fill" style="width: ${percentage}%">
+                            ${count}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+    document.getElementById('serviceChart').innerHTML = chartHtml || '<div class="no-data">No data available</div>';
+}
+
+function generateStatusChart(requests) {
+    const statusCount = {
+        'Pending': requests.filter(r => r.status === 'Pending').length,
+        'In Progress': requests.filter(r => r.status === 'In Progress').length,
+        'Resolved': requests.filter(r => r.status === 'Resolved').length
+    };
+
+    const max = Math.max(...Object.values(statusCount), 1);
+    const chartHtml = Object.entries(statusCount)
+        .map(([status, count]) => {
+            const percentage = (count / max) * 100;
+            return `
+                <div class="chart-bar">
+                    <div class="chart-label">${status}</div>
+                    <div class="chart-bar-bg">
+                        <div class="chart-bar-fill" style="width: ${percentage}%">
+                            ${count}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+    document.getElementById('statusChart').innerHTML = chartHtml;
+}
+
+function generateReportsTable(requests) {
+    if (requests.length === 0) {
+        document.getElementById('reportsTable').innerHTML = '<div class="no-data">No requests submitted yet</div>';
+        return;
+    }
+
+    const tableHtml = `
+        <table>
+            <thead>
+                <tr>
+                    <th>Request ID</th>
+                    <th>Citizen</th>
+                    <th>Service</th>
+                    <th>Status</th>
+                    <th>Submitted</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${requests.sort((a, b) => new Date(b.date) - new Date(a.date)).map(req => `
+                    <tr>
+                        <td><strong>${req.id}</strong></td>
+                        <td>${req.name}</td>
+                        <td>${req.service}</td>
+                        <td><span class="status-badge status-${req.status.toLowerCase().replace(' ', '-')}">${req.status}</span></td>
+                        <td>${req.submittedAt}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+
+    document.getElementById('reportsTable').innerHTML = tableHtml;
+}
+
+// ==================== INITIALIZATION ====================
+window.addEventListener('load', () => {
+    updateHomeStats();
+    
+    // Set today's date as default
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('requestDate');
+    if (dateInput) {
+        dateInput.value = today;
+    }
+});
+</script>
+
+</body>
+</html>
